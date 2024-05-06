@@ -4,7 +4,7 @@ from Bookapp.models import Book,User,BookRequest
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields='__all__'
+        exclude=['password']
 
 
 class BookSerializer(serializers.ModelSerializer):

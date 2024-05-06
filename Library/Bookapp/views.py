@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth import logout, login
+from django.contrib.auth import logout, login , authenticate
 from django.contrib.auth.decorators import login_required
 from Bookapp.serializers import *
 from rest_framework.views import APIView
@@ -21,8 +21,9 @@ class CreateUserView(APIView):
 class LoginView(APIView):
 
     def post(self,request):
-        user_id=request.data.user_id
-        user=User.Objects.get(pk=user_id)
+        user_name=request.data.user_name
+        password=request.data.password
+        user=authenticate(request=request,username=user_name,password=password)
         if user:
             login(request,user)
             return Response({'status':'User logged in'})
@@ -53,10 +54,10 @@ class CreateBookView(APIView):
         return Response({'error':serializer.errors},status=status.HTTP_406_NOT_ACCEPTABLE)
     
     def put(self,request):
-        return
+        return Response({'Put':'Success'})
     
     def delete(self,request):
-        return
+        return Response({'Delete':'Success'})
     
 
 class RequestBookView(APIView):
