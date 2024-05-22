@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import logout, login , authenticate
-from django.contrib.auth.decorators import login_required
+from rest_framework import permissions 
+from rest_framework.authentication import BasicAuthentication
 from Bookapp.serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -9,6 +10,8 @@ from .models import Book,User
 
 
 class CreateUserView(APIView):
+
+    permission_classes=[permissions.AllowAny]
 
     def post(self,request):
         serializer=UserSerializer(data=request.data)
@@ -19,6 +22,8 @@ class CreateUserView(APIView):
 
 
 class LoginView(APIView):
+
+    permission_classes=[permissions.AllowAny]
 
     def post(self,request):
         user_name=request.data.user_name
@@ -32,12 +37,18 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
 
+    permission_classes=[permissions.IsAuthenticated]
+    authentication_classes=[BasicAuthentication]
+
     def post(self,request):
         logout(request)
         return Response({'Status':'Successfully logged out'})
 
 
 class CreateBookView(APIView):
+
+    permission_classes=[permissions.IsAuthenticated]
+    authentication_classes=[BasicAuthentication]
 
     def get(self,request,title_):
         book=Book.objects.get(title=title_)
@@ -62,6 +73,9 @@ class CreateBookView(APIView):
 
 class RequestBookView(APIView):
 
+    permission_classes=[permissions.IsAuthenticated]
+    authentication_classes=[BasicAuthentication]
+    
     def get(self,request,id):
         query=BookRequest.objects.get(pk=id)
         serializer=BookRequestSerializer(instance=query)
